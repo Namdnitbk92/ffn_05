@@ -11,6 +11,25 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::auth();
+
+Route::group(['middleware' => 'web'], function () {
+    Route::get('/', [
+        'as' => '/',
+        'uses' => 'HomeController@index',
+    ]);
+
+    Route::group(['prefix' => 'admin'], function () {
+        Route::get('/', [
+            'as' => 'admin.welcome',
+            'uses' => 'HomeController@welcome'
+        ]);
+    });
+
+    Route::group(['prefix' => 'users'], function () {
+        Route::get('/', [
+            'as' => 'users.welcome',
+            'uses' => 'HomeController@welcome'
+        ]);
+    });
 });

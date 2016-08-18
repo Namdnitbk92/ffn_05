@@ -390,6 +390,10 @@
     color : #94c2ea !important;
 }
 
+.page-content {
+    margin : 10% 0 0 2%;
+}
+
 /* Keyframes */
 @-webkit-keyframes buttonFadeInUp {
   0% {

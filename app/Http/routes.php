@@ -26,10 +26,13 @@ Route::group(['middleware' => 'web'], function () {
         ]);
     });
 
-    Route::group(['prefix' => 'users'], function () {
+    Route::group(['prefix' => 'users', 'namespace' => 'User'], function () {
         Route::get('/', [
             'as' => 'users.welcome',
-            'uses' => 'HomeController@welcome'
+            'uses' => 'UserController@welcome'
         ]);
+
+        Route::resource('news', 'NewController');
+        Route::resource('matches', 'MatchController', ['only' => ['index', 'show']]);
     });
 });

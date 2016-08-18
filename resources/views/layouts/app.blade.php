@@ -14,28 +14,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/semantic.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/jqx.base.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/jqx.ui-redmond.css') }}" rel="stylesheet">
+
 </head>
-@if(!Auth::guest())
-<style>
-    #app-layout {
-        overflow: hidden;
-    }
-</style>
-@endif
 <body id="app-layout">
 <div class="ui fixed inverted menu">
     <div class="ui container">
-        <a class="item" onclick="(function(){
+        <a class="launch icon item" onclick="(function () {
                 $('.ui.sidebar').sidebar('toggle');
             })()">
-            {{ trans('app.menu') }}
+            <i class="content icon"></i>
+            <!-- {{ trans('app.menu') }} -->
         </a>
         <a href="#" class="header item ct-header">
             {{ trans('app.app_name') }}
         </a>
-        <a href="{{ url('/home') }}" class="item"><i class="home icon"></i>&nbsp;{{ trans('app.home') }}</a>
         @if(!Auth::guest())
-        <a href="{{ url('/home') }}" class="item"><i class="newspaper icon"></i>&nbsp;{{ trans('app.new') }}</a>
         <div class="ui search item">
             <div class="ui icon input">
                 <input class="prompt" type="text" placeholder="Search...">
@@ -44,12 +39,19 @@
             <div class="results"></div>
         </div>
         @endif
-        <div class="right item">
+        <div class="right menu">
+            <a href="#" class="item"><i class="home icon"></i>&nbsp;{{ trans('app.home') }}</a>
             @if(Auth::guest())
                 <a class="item" href="{{ url('/login') }}" class="ui inverted button"><i class="sign in icon"></i>&nbsp;
                     {{ trans('login.login') }}
                 </a>
             @else
+                @can('is_admin', Auth::user())
+                    <a href="{{ route('admin.welcome') }}" class="item"><i class="newspaper icon"></i>&nbsp;{{ trans('app.new') }}</a>
+                @else
+                    <a href="{{ route('users.news.index') }}" class="item"><i class="newspaper icon"></i>&nbsp;{{ trans('app.new') }}</a>
+                @endcan
+                
                 <div class="ui simple dropdown item">
                     {{ Auth::user()->name }} <i class="dropdown icon"></i>
                     <div class="menu">
@@ -63,27 +65,55 @@
         </div>
     </div>
 
-    <div class="ui sidebar inverted vertical menu">
-        <div class="divider">
-            <a class="item">
-                <i class="flag icon"></i>&nbsp;{{ trans('app.league') }}
-            </a>
-            <a class="item">
-                <i class="linux icon"></i>&nbsp;{{ trans('app.team') }}
-            </a>
-            <a class="item">
-                <i class="soccer icon"></i>&nbsp;{{ trans('app.match') }}
-            </a>
-        </div>
+    <div class="ui left vertical inverted labeled icon sidebar menu uncover">
+      <a class="item">
+        <i class="flag icon"></i>&nbsp;
+        {{ trans('app.league') }}
+      </a>
+      <a class="item">
+        <i class="linux icon"></i>&nbsp;
+        {{ trans('app.team') }}
+      </a>
+       @can('is_admin', Auth::user())
+       <a class="item">
+            <i class="soccer icon"></i>&nbsp;
+            {{ trans('app.match') }}
+        </a>
+       @else
+        <a class="item" href="{{ route('users.matches.index') }}">
+            <i class="soccer icon"></i>&nbsp;
+            {{ trans('app.match') }}
+        </a>
+       @endcan
+      
     </div>
     <div class="pusher">
     </div>
 
 </div>
 @yield('content')
+@if(!Auth::guest())
+<div class="ui black inverted vertical footer segment">
+  <div class="ui center aligned container">
+    <div class="ui stackable inverted grid">
+      <div class="three wide column">
+        <h4 class="ui inverted header">Company</h4>
+        <div class="ui inverted link list">
+          <a class="item" href="https://github.com/Semantic-Org/Semantic-UI" target="_blank">Framgia</a>
+        </div>
+      </div>
+      <div class="seven wide right floated column">
+        <h4 class="ui inverted teal header">Football News System</h4>
+        <p> This is a football news page tell about news,transfer,result matches,v.v...</p>
+      </div>
+    </div>
+  </div>
+</div>
+@endif
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="{{ asset('js/app.js') }}"></script>
 <script src="{{ asset('js/semantic.min.js') }}"></script>
+<script src="{{ asset('js/jqx-all.js') }}"></script>
 </body>
 </html>

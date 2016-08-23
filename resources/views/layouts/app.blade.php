@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ trans('app.app_name') }}</title>
 
@@ -23,20 +24,17 @@
     </style>
 @endif
 <body id="app-layout">
-<div class="ui fixed inverted menu">
-    <div class="ui container">
-        <a class="item"
-           onclick="(function () {
+<div class="ui fixed inverted menu full height">
+    <div class="main ui container">
+        <a class="launch icon item" onclick="(function () {
                 $('.ui.sidebar').sidebar('toggle');
             })()">
-            {{ trans('app.menu') }}
+            <i class="content icon"></i>
         </a>
         <a href="#" class="header item ct-header">
             {{ trans('app.app_name') }}
         </a>
-        <a href="{{ url('/home') }}" class="item"><i class="home icon"></i>&nbsp;{{ trans('app.home') }}</a>
         @if(!Auth::guest())
-            <a href="{{ url('/home') }}" class="item"><i class="newspaper icon"></i>&nbsp;{{ trans('app.new') }}</a>
             <div class="ui search item">
                 <div class="ui icon input">
                     <input class="prompt" type="text" placeholder="Search...">
@@ -45,27 +43,35 @@
                 <div class="results"></div>
             </div>
         @endif
-        <div class="right item">
+        <div class="right menu">
+            <a href="#" class="item"><i class="home icon"></i>&nbsp;{{ trans('app.home') }}</a>
             @if(Auth::guest())
                 <a class="item" href="{{ url('/login') }}" class="ui inverted button"><i class="sign in icon"></i>&nbsp;
                     {{ trans('login.login') }}
                 </a>
             @else
                 @can('is_admin', Auth::user())
-                    <a href="{{ route('admin.welcome') }}" class="item"><i
-                                class="newspaper icon"></i>&nbsp;{{ trans('app.new') }}</a>
+                    <a href="{{ route('admin.welcome') }}" class="item">
+                        <i class="newspaper icon"></i>&nbsp;{{ trans('app.new') }}
+                    </a>
                 @else
-                    <a href="{{ route('users.news.index') }}" class="item"><i
-                                class="newspaper icon"></i>&nbsp;{{ trans('app.new') }}</a>
+                    <a href="{{ route('users.news.index') }}" class="item">
+                        <i class="newspaper icon"></i>&nbsp;{{ trans('app.new') }}
+                    </a>
                 @endcan
-
                 <div class="ui simple dropdown item">
                     {{ Auth::user()->name }} <i class="dropdown icon"></i>
                     <div class="menu">
-                        <a class="item" href="{{ url('/logout') }}" class="ui inverted button"><i
-                                    class="sign out icon"></i>&nbsp; {{ trans('login.logout') }}</a>
-                        <a class="item" href="#"><i class="user icon"></i>&nbsp;{{ trans('app.profile') }}</a>
-                        <a class="item" href="#"><i class="flag outline icon"></i>&nbsp;{{ trans('app.languages') }}</a>
+                        <a class="item" href="{{ url('/logout') }}" class="ui inverted button">
+                            <i class="sign out icon"></i>&nbsp; {{ trans('login.logout') }}
+                        </a>
+                        <a class="item" href="#">
+                            <i class="user icon"></i>&nbsp;{{ trans('app.profile') }}
+                        </a>
+                        <a class="item" href="#">
+                            <i class="flag outline icon"></i>&nbsp;
+                            {{ trans('app.languages') }}
+                        </a>
                     </div>
                 </div>
             @endif
@@ -77,8 +83,13 @@
             <i class="flag icon"></i>&nbsp;
             {{ trans('app.league') }}
         </a>
+        <a class="item" href="{{ route('admin.teams.index') }}">
+        <a class="item">
+            <i class="linux icon"></i>&nbsp;
+            {{ trans('app.team') }}
+        </a>
         @can('is_admin', Auth::user())
-            <a class="item">
+            <a class="item" href="{{ route('admin.matches.index') }}">
                 <i class="soccer icon"></i>&nbsp;
                 {{ trans('app.match') }}
             </a>
@@ -127,7 +138,6 @@
 <div class="pusher">
 </div>
 
-</div>
 @yield('content')
 @if(!Auth::guest())
     <div class="ui black inverted vertical footer segment">
@@ -147,11 +157,38 @@
             </div>
         </div>
     </div>
+    <div class="pusher">
+    </div>
+@if(!Auth::guest())
+    <div class="ui stackable grid">
+        <div class="equal height row">
+            <div class="two wide column">
+            </div>
+            <div class="twelve wide column">
+                <div class="ui segment content">
+                    <div class="ui big breadcrumb">
+                        <a class="section">{{ trans('app.home') }}</a>
+                        <i class="right chevron icon divider"></i>
+                        <a class="section">{{ trans('match.match_list') }}</a>
+                        <i class="right chevron icon divider"></i>
+                        <div class="active section">{{ trans('app.information') }}</div>
+                    </div>
+                    @yield('content')
+                </div>
+            </div>
+            <div class="two wide column">
+            </div>
+        </div>
+    </div>
+@else
+    @yield('content')
 @endif
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="{{ asset('js/app.js') }}"></script>
 <script src="{{ asset('js/semantic.min.js') }}"></script>
 <script src="{{ asset('js/jqx-all.js') }}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?json?&mode=transit&origin=frontera+el+hierro&destination=la+restinga+el+hierro&departure_time=1399995076&key=AIzaSyBY2xnVxwjLYhuBNmhiMDUExm-vpUBa-IY&&libraries=places&callback=app.initMap"
+        async defer></script>
 </body>
 </html>

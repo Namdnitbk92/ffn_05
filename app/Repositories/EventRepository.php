@@ -11,4 +11,14 @@ class EventRepository extends EloquentRepository
     {
         parent::__construct($event);
     }
+
+    public function getEventsByMatch($matchId)
+    {
+        return $this->where('match_id', $matchId)->lists('id');
+    }
+
+    public function deleteEventsByMatch($matchId)
+    {
+        return $this->where('match_id', $matchId)->deleteAll();
+    }
 }

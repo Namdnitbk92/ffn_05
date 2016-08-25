@@ -68,6 +68,11 @@
                         <a class="item" href="#"><i class="flag outline icon"></i>&nbsp;{{ trans('app.languages') }}</a>
                     </div>
                 </div>
+                @include('layouts.notifications');
+                <a href="#" class="item ui blue" onclick="notifications.displayMessage()">
+                    <label style="margin:10px;" id="_message">0</label>
+                    <i style="font-size:30px;position:absolute;color:red;" class="comment outline icon"></i>&nbsp;
+                </a>
             @endif
         </div>
     </div>
@@ -111,6 +116,47 @@
     </div>
 </div>
 
+@if(!Auth::guest())
+    <div class="ui stackable grid">
+        <div class="equal height row">
+            <div class="two wide column">
+            </div>
+            <div class="twelve wide column">
+                <div class="ui segment content">
+                    <div class="ui big breadcrumb">
+                        <a class="section"></a>
+                        <i class="right chevron icon divider"></i>
+                        <a class="section"></a>
+                        <i class="right chevron icon divider"></i>
+                        <div class="active section"></div>
+                    </div>
+                    @yield('content')
+                </div>
+            </div>
+            <div class="two wide column">
+                @can('is_admin', Auth::user())
+                    <div id="message">
+                        <div class="field">
+                            {{ Html::image(asset('images/man.png'), [
+                                'class' => 'img-size', 
+                                'id' => 'user-bet']) }}
+                            <label class="msg-content"></label>
+                        </div>
+                    </div>
+                @else
+                    <div id="messageToUser">
+                        <div class="field">
+                            <label class="alert alert-info msg-user-content"></label>
+                        </div>
+                    </div>
+                @endcan
+            </div>
+        </div>
+    </div>
+@else
+    @yield('content')
+@endif
+
 <div class="ui sidebar inverted vertical menu">
     <div class="divider">
         <a class="item">
@@ -134,9 +180,9 @@
         <div class="ui center aligned container">
             <div class="ui stackable inverted grid">
                 <div class="three wide column">
-                    <h4 class="ui inverted header">Company</h4>
+                    <h4 class="ui inverted header">{{ trans('app.company') }}</h4>
                     <div class="ui inverted link list">
-                        <a class="item" href="https://github.com/Semantic-Org/Semantic-UI"
+                        <a class="item" href="#"
                            target="_blank">{{ trans('app.company') }}</a>
                     </div>
                 </div>
